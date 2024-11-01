@@ -1,13 +1,14 @@
 """
-Core implementation of documentation processing commands.
+React documentation processing implementation.
 
-This module contains the implementation for processing project structure
+This module contains the implementation for processing React project structure
 and generating documentation based on different command strategies.
 """
 
 import os
 import subprocess
 from typing import Dict, Any, List
+from utils.get_base_path import get_base_path
 
 # File patterns to exclude
 EXCLUDED_EXTENSIONS = [
@@ -35,14 +36,18 @@ COMPONENT_REQUIRED_EXTENSIONS = [
     '.config.ts'
 ]
 
-def display_command(files: List[str], dir_path: str) -> None:
+def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None:
     """
     Generates and displays the command for the given set of files.
 
     Args:
         files (List[str]): List of files to be documented.
         dir_path (str): Current directory path.
+        mode (str): Running mode, either "prod" or "dev" (default: "prod")
     """
+    # Get base path for the current mode
+    base = get_base_path(mode)
+
     # Join all file names into a single string, separated by space
     add_files = " ".join(files)
 
@@ -59,12 +64,9 @@ def display_command(files: List[str], dir_path: str) -> None:
     # - If relative_path is empty (we're at react/src root), use just 'docs/react'
     doc_path = f"docs/react/{relative_path}" if relative_path else "docs/react"
     
-    message = f'"' 
-    command = f"""aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream \\ 
-    --read .nexus/pkg/akads/template.md \\  
-    Doc Path: {doc_path} \\
-    React Files: {react_files} \\ 
-    """
+    guidelines = f'--read {base}/prompts/react.md'
+    message = f'--message "{doc_path}"'
+    command = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream {guidelines} {message} {react_files}"
 
     print(f"\nfiles: {files}")
     print(f"\nrun_command: \n {command} \n")
@@ -120,37 +122,36 @@ def display_command(files: List[str], dir_path: str) -> None:
         print()
         print("-" * 80)
 
-def process_directory(json: Dict[str, Any], current_path: str = "") -> None:
+def process_directory(json: Dict[str, Any], current_path: str = "", mode: str = "prod") -> None:
     """
     Recursively processes a directory and displays commands for found files.
 
     Args:
         json (Dict[str, Any]): Directory structure to process.
         current_path (str): Current path in directory structure.
+        mode (str): Running mode, either "prod" or "dev" (default: "prod")
     """
     for key, value in json.items():
         if key == '__snapshots__':
             continue
         if key == 'files':
             if value:
-                display_command(value, current_path)
+                display_command(value, current_path, mode)
         else:
             new_path = os.path.join(current_path, key)
-            process_directory(value, new_path)
+            process_directory(value, new_path, mode)
 
-def run(json: Dict[str, Any]) -> None:
+def run(json: Dict[str, Any], mode: str = "prod") -> None:
     """
-    Processes the JSON structure and displays commands for files found in react/src.
+    Processes the React src directory structure and displays commands for found files.
 
     Args:
         json (Dict[str, Any]): The complete JSON structure.
+        mode (str): Running mode, either "prod" or "dev" (default: "prod")
     """
     print("-" * 80)
     print("Starting - React Docs:")
     print("-" * 80)
-    if "react" in json and "src" in json["react"]:
-        process_directory(json["react"]["src"], "react/src")
-        print("Processing completed.")
-        print("-" * 80)
-    else:
-        print("Structure 'react/src' not found in provided JSON.")
+    process_directory(json["react"]["src"], "react/src", mode)
+    print("Processing completed.")
+    print("-" * 80)
