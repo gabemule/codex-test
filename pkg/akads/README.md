@@ -2,7 +2,7 @@
 
 This module runs documentation generation based on a JSON structure file. The documentation generator can be used in two modes:
 - **🔧 dev**: Running directly from the codex repository
-- **🚀 prod**: Running from .nexus/pkg when codex is cloned as .nexus in another repository
+- **🚀 prod**: Running from .codex/pkg when codex is cloned as .codex in another repository
 
 ## 📋 Usage Patterns
 
@@ -13,12 +13,12 @@ Development mode (in codex repository):
 python -m pkg.akads --mode dev --json-path .tmp/tree_project.json
 ```
 
-Production mode (in repository with .nexus):
+Production mode (in repository with .codex):
 ```bash
-# Add .nexus to PYTHONPATH first
-PYTHONPATH=/path/to/project/.nexus python -m pkg.akads --json-path .tmp/tree_project.json
+# Add .codex to PYTHONPATH first
+PYTHONPATH=/path/to/project/.codex python -m pkg.akads --json-path .tmp/tree_project.json
 # or
-export PYTHONPATH=/path/to/project/.nexus
+export PYTHONPATH=/path/to/project/.codex
 python -m pkg.akads --json-path .tmp/tree_project.json
 ```
 
@@ -30,10 +30,10 @@ from pkg.akads import run
 run(json_path=".tmp/tree_project.json", mode="dev")
 ```
 
-Production mode (in repository with .nexus):
+Production mode (in repository with .codex):
 ```python
 import sys
-sys.path.append('/path/to/project/.nexus')  # Add .nexus to Python path
+sys.path.append('/path/to/project/.codex')  # Add .codex to Python path
 from pkg.akads import run
 run(json_path=".tmp/tree_project.json")  # mode defaults to "prod"
 ```
@@ -48,11 +48,11 @@ When working directly in the codex repository:
 # 1. Activate virtual environment (only needed once)
 source bin/start.sh --mode dev
 
-# 2. Install aider-chat (only needed once)
-python shared/require_aider-chat.py
+# 2. Generate project tree (needed before documentation generation)
+./bin/tree_generate_all.sh
 
-# 3. Generate project tree (needed before documentation generation)
-./bin/tree_project.sh
+# 3. Install aider-chat (only needed once)
+python shared/require_aider-chat.py
 
 # 4. Set your Anthropic API key (required for documentation generation)
 export ANTHROPIC_API_KEY=your_api_key_here
@@ -68,23 +68,23 @@ python3 -c "from pkg.akads import run; run(mode='dev')"  # Programmatic usage
 When using codex as a tool in another repository:
 
 ```bash
-# 1. Clone codex as .nexus
-git clone https://github.com/your-org/codex.git .nexus
+# 1. Clone codex as .codex
+git clone https://github.com/your-org/codex.git .codex
 
 # 2. Activate virtual environment (only needed once)
-source .nexus/bin/start.sh
+source .codex/bin/start.sh
 
-# 3. Install aider-chat (only needed once)
-python .nexus/shared/require_aider-chat.py
+# 3. Generate project tree (needed before documentation generation)
+./.codex/bin/tree_generate_all.sh
 
-# 4. Generate project tree (needed before documentation generation)
-python -m .nexus/utils.file_tree.gen_project_tree
+# 4. Install aider-chat (only needed once)
+python .codex/shared/require_aider-chat.py
 
 # 5. Set your Anthropic API key (required for documentation generation)
 export ANTHROPIC_API_KEY=your_api_key_here
 
-# 6. Add .nexus to PYTHONPATH
-export PYTHONPATH=$PWD/.nexus
+# 6. Add .codex to PYTHONPATH
+export PYTHONPATH=$PWD/.codex
 
 # 7. Generate documentation (choose one):
 python -m pkg.akads  # Command-line usage
@@ -92,7 +92,7 @@ python -m pkg.akads  # Command-line usage
 python3 -c "from pkg.akads import run; run()"  # Programmatic usage
 
 # 8. Optional: Clean up when done
-rm -rf .nexus
+rm -rf .codex
 ```
 
 ## 📚 Documentation Modules
@@ -119,7 +119,7 @@ Processes Sass files and generates documentation for:
 
 - **🔧 mode**: Running mode, either "prod" or "dev"
   - Default: "prod"
-  - "prod": Running from .nexus in another repository
+  - "prod": Running from .codex in another repository
   - "dev": Running directly from codex repository
 
 ## 🔄 Path Handling
@@ -129,11 +129,11 @@ The module uses `utils/get_base_path.py` to handle paths correctly in both produ
 ```python
 from utils.get_base_path import get_base_path
 
-base = get_base_path(mode)  # Returns ".nexus" for prod, "." for dev
+base = get_base_path(mode)  # Returns ".codex" for prod, "." for dev
 ```
 
 This ensures that files (like prompts and templates) are accessed from the correct location:
-- In production mode (default): Files are loaded from `.nexus/...`
+- In production mode (default): Files are loaded from `.codex/...`
 - In development mode: Files are loaded from `./...`
 
 ## 📁 Directory Structure
@@ -157,7 +157,7 @@ utils/
 ### 🚀 Production Mode (in another repository)
 ```
 your-project/
-└── .nexus/               # Cloned codex repository
+└── .codex/               # Cloned codex repository
     └── pkg/
         ├── akads/        # Same structure as development mode
         └── utils/        # Same structure as development mode
@@ -172,5 +172,5 @@ your-project/
 5. 🛠️ Core implementation is in run.py, using shared utilities
 6. 🔧 Path handling is managed by utils/get_base_path.py
 7. 📦 Production mode requires:
-   - codex to be cloned as .nexus in the target repository
-   - .nexus to be added to PYTHONPATH
+   - codex to be cloned as .codex in the target repository
+   - .codex to be added to PYTHONPATH
