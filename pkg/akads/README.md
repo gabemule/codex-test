@@ -15,7 +15,11 @@ python -m pkg.akads --mode dev --json-path .tmp/tree_project.json
 
 Production mode (in repository with .nexus):
 ```bash
-python -m pkg.akads --json-path .tmp/tree_project.json  # mode defaults to "prod"
+# Add .nexus to PYTHONPATH first
+PYTHONPATH=/path/to/project/.nexus python -m pkg.akads --json-path .tmp/tree_project.json
+# or
+export PYTHONPATH=/path/to/project/.nexus
+python -m pkg.akads --json-path .tmp/tree_project.json
 ```
 
 ### 🔧 Programmatic Usage (via __init__.py)
@@ -28,7 +32,9 @@ run(json_path=".tmp/tree_project.json", mode="dev")
 
 Production mode (in repository with .nexus):
 ```python
-from .nexus.pkg.akads import run
+import sys
+sys.path.append('/path/to/project/.nexus')  # Add .nexus to Python path
+from pkg.akads import run
 run(json_path=".tmp/tree_project.json")  # mode defaults to "prod"
 ```
 
@@ -40,7 +46,7 @@ When working directly in the codex-test repository:
 
 ```bash
 # 1. Activate virtual environment (only needed once)
-source bin/start.sh
+source bin/start.sh --mode dev
 
 # 2. Install aider-chat (only needed once)
 python shared/require_aider-chat.py
@@ -77,12 +83,15 @@ python -m .nexus/utils.file_tree.gen_project_tree
 # 5. Set your Anthropic API key (required for documentation generation)
 export ANTHROPIC_API_KEY=your_api_key_here
 
-# 6. Generate documentation (choose one):
-python -m .nexus/pkg.akads  # Command-line usage
-# or
-python3 -c "from .nexus.pkg.akads import run; run()"  # Programmatic usage
+# 6. Add .nexus to PYTHONPATH
+export PYTHONPATH=$PWD/.nexus
 
-# 7. Optional: Clean up when done
+# 7. Generate documentation (choose one):
+python -m pkg.akads  # Command-line usage
+# or
+python3 -c "from pkg.akads import run; run()"  # Programmatic usage
+
+# 8. Optional: Clean up when done
 rm -rf .nexus
 ```
 
@@ -162,4 +171,6 @@ your-project/
 4. 🚀 Default mode is "prod" when no mode is specified
 5. 🛠️ Core implementation is in run.py, using shared utilities
 6. 🔧 Path handling is managed by utils/get_base_path.py
-7. 📦 Production mode requires codex-test to be cloned as .nexus in the target repository
+7. 📦 Production mode requires:
+   - codex-test to be cloned as .nexus in the target repository
+   - .nexus to be added to PYTHONPATH
