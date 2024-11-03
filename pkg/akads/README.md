@@ -1,14 +1,14 @@
 # 📚 Documentation Generator
 
 This module runs documentation generation based on a JSON structure file. The documentation generator can be used in two modes:
-- **🔧 dev**: Running directly from the codex-test repository
-- **🚀 prod**: Running from .nexus/pkg when codex-test is cloned as .nexus in another repository
+- **🔧 dev**: Running directly from the codex repository
+- **🚀 prod**: Running from .nexus/pkg when codex is cloned as .nexus in another repository
 
 ## 📋 Usage Patterns
 
 ### 💻 Command-line Usage (via __main__.py)
 
-Development mode (in codex-test repository):
+Development mode (in codex repository):
 ```bash
 python -m pkg.akads --mode dev --json-path .tmp/tree_project.json
 ```
@@ -24,7 +24,7 @@ python -m pkg.akads --json-path .tmp/tree_project.json
 
 ### 🔧 Programmatic Usage (via __init__.py)
 
-Development mode (in codex-test repository):
+Development mode (in codex repository):
 ```python
 from pkg.akads import run
 run(json_path=".tmp/tree_project.json", mode="dev")
@@ -42,7 +42,7 @@ run(json_path=".tmp/tree_project.json")  # mode defaults to "prod"
 
 ### 🔧 Development Mode
 
-When working directly in the codex-test repository:
+When working directly in the codex repository:
 
 ```bash
 # 1. Activate virtual environment (only needed once)
@@ -65,11 +65,11 @@ python3 -c "from pkg.akads import run; run(mode='dev')"  # Programmatic usage
 
 ### 🚀 Production Mode
 
-When using codex-test as a tool in another repository:
+When using codex as a tool in another repository:
 
 ```bash
-# 1. Clone codex-test as .nexus
-git clone https://github.com/your-org/codex-test.git .nexus
+# 1. Clone codex as .nexus
+git clone https://github.com/your-org/codex.git .nexus
 
 # 2. Activate virtual environment (only needed once)
 source .nexus/bin/start.sh
@@ -120,7 +120,7 @@ Processes Sass files and generates documentation for:
 - **🔧 mode**: Running mode, either "prod" or "dev"
   - Default: "prod"
   - "prod": Running from .nexus in another repository
-  - "dev": Running directly from codex-test repository
+  - "dev": Running directly from codex repository
 
 ## 🔄 Path Handling
 
@@ -138,7 +138,7 @@ This ensures that files (like prompts and templates) are accessed from the corre
 
 ## 📁 Directory Structure
 
-### 🔧 Development Mode (in codex-test repository)
+### 🔧 Development Mode (in codex repository)
 ```
 pkg/
 └── akads/
@@ -157,7 +157,7 @@ utils/
 ### 🚀 Production Mode (in another repository)
 ```
 your-project/
-└── .nexus/               # Cloned codex-test repository
+└── .nexus/               # Cloned codex repository
     └── pkg/
         ├── akads/        # Same structure as development mode
         └── utils/        # Same structure as development mode
@@ -172,5 +172,5 @@ your-project/
 5. 🛠️ Core implementation is in run.py, using shared utilities
 6. 🔧 Path handling is managed by utils/get_base_path.py
 7. 📦 Production mode requires:
-   - codex-test to be cloned as .nexus in the target repository
+   - codex to be cloned as .nexus in the target repository
    - .nexus to be added to PYTHONPATH

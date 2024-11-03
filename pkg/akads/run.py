@@ -41,7 +41,7 @@ def run(json_path: str = ".tmp/tree_project.json", mode: str = "prod") -> None:
         json_path (str): Path to the JSON structure file
         mode (str): Running mode, either "prod" or "dev" (default: "prod")
             - "prod": Running from .nexus in another repository
-            - "dev": Running locally from codex-test repository
+            - "dev": Running locally from codex repository
     """
     try:
         # Get base path for the current mode
