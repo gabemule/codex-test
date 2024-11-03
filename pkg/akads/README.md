@@ -51,13 +51,16 @@ source bin/start.sh --mode dev
 # 2. Generate project tree (needed before documentation generation)
 ./bin/tree_generate_all.sh
 
-# 3. Install aider-chat (only needed once)
-python shared/require_aider-chat.py
-
-# 4. Set your Anthropic API key (required for documentation generation)
+# 3. Set your Anthropic API key (required for documentation generation)
 export ANTHROPIC_API_KEY=your_api_key_here
 
-# 5. Generate documentation (choose one):
+# 4. Add project root to PYTHONPATH
+export PYTHONPATH=$PWD
+
+# 5. Install aider (only needed once)
+python -m shared.require_aider
+
+# 6. Generate documentation (choose one):
 python -m pkg.akads --mode dev  # Command-line usage
 # or
 python3 -c "from pkg.akads import run; run(mode='dev')"  # Programmatic usage
@@ -77,14 +80,14 @@ source .codex/bin/start.sh
 # 3. Generate project tree (needed before documentation generation)
 ./.codex/bin/tree_generate_all.sh
 
-# 4. Install aider-chat (only needed once)
-python .codex/shared/require_aider-chat.py
-
-# 5. Set your Anthropic API key (required for documentation generation)
+# 4. Set your Anthropic API key (required for documentation generation)
 export ANTHROPIC_API_KEY=your_api_key_here
 
-# 6. Add .codex to PYTHONPATH
+# 5. Add .codex to PYTHONPATH
 export PYTHONPATH=$PWD/.codex
+
+# 6. Install aider (only needed once)
+python -m shared.require_aider
 
 # 7. Generate documentation (choose one):
 python -m pkg.akads  # Command-line usage
@@ -165,7 +168,7 @@ your-project/
 
 ## 📝 Usage Notes
 
-1. ✨ Virtual environment activation and aider-chat installation only need to be done once
+1. ✨ Virtual environment activation and aider installation only need to be done once
 2. 🔄 Project tree must be generated before documentation generation
 3. 🔑 The ANTHROPIC_API_KEY must be set before running pkg.akads
 4. 🚀 Default mode is "prod" when no mode is specified
