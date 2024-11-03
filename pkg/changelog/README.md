@@ -1,12 +1,12 @@
-# Changelog Generator
+# 📝 Changelog Generator
 
 This module runs aider to generate formatted changelogs. The changelog command can be used in two modes:
-- **dev**: Running directly from the codex-test repository
-- **prod**: Running from .nexus/pkg when codex-test is cloned as .nexus in another repository
+- **🔧 dev**: Running directly from the codex-test repository
+- **🚀 prod**: Running from .nexus/pkg when codex-test is cloned as .nexus in another repository
 
-## Usage Patterns
+## 📋 Usage Patterns
 
-### Command-line Usage (via __main__.py)
+### 💻 Command-line Usage (via __main__.py)
 
 Development mode (in codex-test repository):
 ```bash
@@ -18,7 +18,7 @@ Production mode (in repository with .nexus):
 python -m pkg.changelog
 ```
 
-### Programmatic Usage (via __init__.py)
+### 🔧 Programmatic Usage (via __init__.py)
 
 Development mode (in codex-test repository):
 ```python
@@ -32,9 +32,9 @@ from .nexus.pkg.changelog import run
 run()
 ```
 
-## Complete Workflows
+## 🚀 Complete Workflows
 
-### Development Mode
+### 🔧 Development Mode
 
 When working directly in the codex-test repository:
 
@@ -57,7 +57,7 @@ python -m pkg.changelog --mode dev  # Command-line usage
 python3 -c "from pkg.changelog import run; run(mode='dev')"  # Programmatic usage
 ```
 
-### Production Mode
+### 🚀 Production Mode
 
 When using codex-test as a tool in another repository:
 
@@ -86,7 +86,7 @@ python3 -c "from .nexus.pkg.changelog import run; run()"  # Programmatic usage
 rm -rf .nexus
 ```
 
-## Command Details
+## ⚙️ Command Details
 
 The generator runs the following aider command (paths shown for production mode):
 
@@ -103,9 +103,9 @@ aider \
   .tmp/commit_full_log.txt
 ```
 
-## Directory Structure
+## 📁 Directory Structure
 
-### Development Mode (in codex-test repository)
+### 🔧 Development Mode (in codex-test repository)
 ```
 pkg/
 └── changelog/
@@ -121,7 +121,7 @@ utils/
     └── gen_all_trees.py   # Generates file trees used by changelog
 ```
 
-### Production Mode (in another repository)
+### 🚀 Production Mode (in another repository)
 ```
 your-project/
 └── .nexus/               # Cloned codex-test repository
@@ -130,13 +130,13 @@ your-project/
         └── utils/        # Same structure as development mode
 ```
 
-## Usage Notes
+## 📝 Usage Notes
 
-1. Virtual environment activation and aider-chat installation only need to be done once
-2. File trees must be generated before each changelog generation
-3. The ANTHROPIC_API_KEY must be set before running pkg.changelog
-4. Choose between command-line usage (via __main__.py) or programmatic usage (via __init__.py)
-5. Default mode is "prod" when no mode is specified
-6. Core implementation is in run.py, using shared utilities from utils/get_base_path.py
-7. Path handling for dev/prod modes is centralized in utils/get_base_path.py
-8. Production mode requires codex-test to be cloned as .nexus in the target repository
+1. ✨ Virtual environment activation and aider-chat installation only need to be done once
+2. 🔄 File trees must be generated before each changelog generation
+3. 🔑 The ANTHROPIC_API_KEY must be set before running pkg.changelog
+4. 🎯 Choose between command-line usage (via __main__.py) or programmatic usage (via __init__.py)
+5. 🚀 Default mode is "prod" when no mode is specified
+6. 🛠️ Core implementation is in run.py, using shared utilities from utils/get_base_path.py
+7. 🔧 Path handling for dev/prod modes is centralized in utils/get_base_path.py
+8. 📦 Production mode requires codex-test to be cloned as .nexus in the target repository

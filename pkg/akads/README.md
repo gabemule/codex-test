@@ -1,12 +1,12 @@
-# Documentation Generator
+# 📚 Documentation Generator
 
 This module runs documentation generation based on a JSON structure file. The documentation generator can be used in two modes:
-- **dev**: Running directly from the codex-test repository
-- **prod**: Running from .nexus/pkg when codex-test is cloned as .nexus in another repository
+- **🔧 dev**: Running directly from the codex-test repository
+- **🚀 prod**: Running from .nexus/pkg when codex-test is cloned as .nexus in another repository
 
-## Usage Patterns
+## 📋 Usage Patterns
 
-### Command-line Usage (via __main__.py)
+### 💻 Command-line Usage (via __main__.py)
 
 Development mode (in codex-test repository):
 ```bash
@@ -18,7 +18,7 @@ Production mode (in repository with .nexus):
 python -m pkg.akads --json-path .tmp/tree_project.json  # mode defaults to "prod"
 ```
 
-### Programmatic Usage (via __init__.py)
+### 🔧 Programmatic Usage (via __init__.py)
 
 Development mode (in codex-test repository):
 ```python
@@ -32,9 +32,9 @@ from .nexus.pkg.akads import run
 run(json_path=".tmp/tree_project.json")  # mode defaults to "prod"
 ```
 
-## Complete Workflows
+## 🚀 Complete Workflows
 
-### Development Mode
+### 🔧 Development Mode
 
 When working directly in the codex-test repository:
 
@@ -57,7 +57,7 @@ python -m pkg.akads --mode dev  # Command-line usage
 python3 -c "from pkg.akads import run; run(mode='dev')"  # Programmatic usage
 ```
 
-### Production Mode
+### 🚀 Production Mode
 
 When using codex-test as a tool in another repository:
 
@@ -86,34 +86,34 @@ python3 -c "from .nexus.pkg.akads import run; run()"  # Programmatic usage
 rm -rf .nexus
 ```
 
-## Documentation Modules
+## 📚 Documentation Modules
 
 The package includes specialized modules for different types of documentation:
 
-### React Documentation (run_doc_react.py)
+### ⚛️ React Documentation (run_doc_react.py)
 Processes React components and generates documentation for:
-- Story files (.stories.tsx)
-- Component files (.tsx with .config.ts)
-- TypeScript utility files
+- 📖 Story files (.stories.tsx)
+- 🔧 Component files (.tsx with .config.ts)
+- 📝 TypeScript utility files
 
-### Sass Documentation (run_doc_sass.py)
+### 🎨 Sass Documentation (run_doc_sass.py)
 Processes Sass files and generates documentation for:
-- SCSS files
-- Style components
-- Functions and mixins
+- 🎯 SCSS files
+- 🔧 Style components
+- 🛠️ Functions and mixins
 
-## Parameters
+## ⚙️ Parameters
 
-- **json_path**: Path to the JSON file containing the project structure
+- **📄 json_path**: Path to the JSON file containing the project structure
   - Default: `.tmp/tree_project.json`
   - The JSON file should contain the project structure to be processed
 
-- **mode**: Running mode, either "prod" or "dev"
+- **🔧 mode**: Running mode, either "prod" or "dev"
   - Default: "prod"
   - "prod": Running from .nexus in another repository
   - "dev": Running directly from codex-test repository
 
-## Path Handling
+## 🔄 Path Handling
 
 The module uses `utils/get_base_path.py` to handle paths correctly in both production and development modes:
 
@@ -127,9 +127,9 @@ This ensures that files (like prompts and templates) are accessed from the corre
 - In production mode (default): Files are loaded from `.nexus/...`
 - In development mode: Files are loaded from `./...`
 
-## Directory Structure
+## 📁 Directory Structure
 
-### Development Mode (in codex-test repository)
+### 🔧 Development Mode (in codex-test repository)
 ```
 pkg/
 └── akads/
@@ -145,7 +145,7 @@ utils/
 └── load_json.py          # JSON loading utility
 ```
 
-### Production Mode (in another repository)
+### 🚀 Production Mode (in another repository)
 ```
 your-project/
 └── .nexus/               # Cloned codex-test repository
@@ -154,12 +154,12 @@ your-project/
         └── utils/        # Same structure as development mode
 ```
 
-## Usage Notes
+## 📝 Usage Notes
 
-1. Virtual environment activation and aider-chat installation only need to be done once
-2. Project tree must be generated before documentation generation
-3. The ANTHROPIC_API_KEY must be set before running pkg.akads
-4. Default mode is "prod" when no mode is specified
-5. Core implementation is in run.py, using shared utilities
-6. Path handling is managed by utils/get_base_path.py
-7. Production mode requires codex-test to be cloned as .nexus in the target repository
+1. ✨ Virtual environment activation and aider-chat installation only need to be done once
+2. 🔄 Project tree must be generated before documentation generation
+3. 🔑 The ANTHROPIC_API_KEY must be set before running pkg.akads
+4. 🚀 Default mode is "prod" when no mode is specified
+5. 🛠️ Core implementation is in run.py, using shared utilities
+6. 🔧 Path handling is managed by utils/get_base_path.py
+7. 📦 Production mode requires codex-test to be cloned as .nexus in the target repository
