@@ -39,12 +39,13 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     relative_path = dir_path.replace('sass/src', '', 1).strip('/')
     doc_path = f"docs/sass/{relative_path}" if relative_path else "docs/sass"
     
-    guidelines = f'--read {base}/prompts/sass.md'
-    message = f'--message "{doc_path}"'
-    command = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream {guidelines} {message} {sass_files}"
+    guidelines = f'--read "{doc_path}"'
+    message = f'--message-file "{base}/pkg/akads/prompts/sass.md"'
+    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream" 
+    command = f"{base_aider} {guidelines} {message} {sass_files}"
 
-    print(f"\nfiles: {files}")
-    print(f"\nrun_command: \n {command} \n")
+    print(f"\nFiles: {files}")
+    # print(f"\nrun_command: \n {command}")
 
     # Helper function to get the base name of a file (without extension)
     def get_base_name(file):
