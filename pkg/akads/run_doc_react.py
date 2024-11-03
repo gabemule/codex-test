@@ -66,7 +66,7 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     
     guidelines = f'--read "{doc_path}"'
     message = f'--message-file "{base}/pkg/akads/prompts/react.md"'
-    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-updates" 
+    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-update" 
     command = f"{base_aider} {guidelines} {message} {react_files}"
 
     print(f"\nFiles: {files}")

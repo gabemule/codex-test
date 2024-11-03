@@ -41,7 +41,7 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     
     guidelines = f'--read "{doc_path}"'
     message = f'--message-file "{base}/pkg/akads/prompts/sass.md"'
-    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream" 
+    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-update" 
     command = f"{base_aider} {guidelines} {message} {sass_files}"
 
     print(f"\nFiles: {files}")
