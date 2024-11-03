@@ -32,6 +32,60 @@ from .nexus.pkg.akads import run
 run(json_path=".tmp/tree_project.json")  # mode defaults to "prod"
 ```
 
+## Complete Workflows
+
+### Development Mode
+
+When working directly in the codex-test repository:
+
+```bash
+# 1. Activate virtual environment (only needed once)
+source bin/start.sh
+
+# 2. Install aider-chat (only needed once)
+python shared/require_aider-chat.py
+
+# 3. Generate project tree (needed before documentation generation)
+./bin/tree_project.sh
+
+# 4. Set your Anthropic API key (required for documentation generation)
+export ANTHROPIC_API_KEY=your_api_key_here
+
+# 5. Generate documentation (choose one):
+python -m pkg.akads --mode dev  # Command-line usage
+# or
+python3 -c "from pkg.akads import run; run(mode='dev')"  # Programmatic usage
+```
+
+### Production Mode
+
+When using codex-test as a tool in another repository:
+
+```bash
+# 1. Clone codex-test as .nexus
+git clone https://github.com/your-org/codex-test.git .nexus
+
+# 2. Activate virtual environment (only needed once)
+source .nexus/bin/start.sh
+
+# 3. Install aider-chat (only needed once)
+python .nexus/shared/require_aider-chat.py
+
+# 4. Generate project tree (needed before documentation generation)
+python -m .nexus/utils.file_tree.gen_project_tree
+
+# 5. Set your Anthropic API key (required for documentation generation)
+export ANTHROPIC_API_KEY=your_api_key_here
+
+# 6. Generate documentation (choose one):
+python -m .nexus/pkg.akads  # Command-line usage
+# or
+python3 -c "from .nexus.pkg.akads import run; run()"  # Programmatic usage
+
+# 7. Optional: Clean up when done
+rm -rf .nexus
+```
+
 ## Documentation Modules
 
 The package includes specialized modules for different types of documentation:
@@ -102,43 +156,10 @@ your-project/
 
 ## Usage Notes
 
-1. The JSON structure file must be valid and accessible
-2. The module automatically detects and processes React and Sass structures
-3. Default mode is "prod" when no mode is specified
-4. Core implementation is in run.py, using shared utilities
-5. Path handling is managed by utils/get_base_path.py
-6. Production mode requires codex-test to be cloned as .nexus in the target repository
-
-## Example JSON Structure
-
-```json
-{
-  "react": {
-    "src": {
-      "components": {
-        "atoms": {
-          "Button": {
-            "files": [
-              "Button.tsx",
-              "Button.stories.tsx",
-              "Button.config.ts"
-            ]
-          }
-        }
-      }
-    }
-  },
-  "sass": {
-    "src": {
-      "components": {
-        "atoms": {
-          "Button": {
-            "files": [
-              "Button.scss"
-            ]
-          }
-        }
-      }
-    }
-  }
-}
+1. Virtual environment activation and aider-chat installation only need to be done once
+2. Project tree must be generated before documentation generation
+3. The ANTHROPIC_API_KEY must be set before running pkg.akads
+4. Default mode is "prod" when no mode is specified
+5. Core implementation is in run.py, using shared utilities
+6. Path handling is managed by utils/get_base_path.py
+7. Production mode requires codex-test to be cloned as .nexus in the target repository
