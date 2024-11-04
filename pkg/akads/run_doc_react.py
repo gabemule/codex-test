@@ -201,6 +201,5 @@ def run(json: Dict[str, Any], mode: str = "prod") -> None:
     print("Starting - React Docs:")
     print("-" * 80)
     process_directory(json["react"]["src"], "react/src", mode)
-    print("-" * 80)
     print("Processing completed.")
     print("-" * 80)

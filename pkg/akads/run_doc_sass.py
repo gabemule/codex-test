@@ -116,6 +116,5 @@ def run(json: Dict[str, Any], mode: str = "prod") -> None:
     print("Starting - Sass Docs:")
     print("-" * 80)
     process_directory(json["sass"]["src"], "sass/src", mode)
-    print("-" * 80)
     print("Processing completed.")
     print("-" * 80)
