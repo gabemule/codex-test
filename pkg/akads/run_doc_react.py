@@ -153,17 +153,23 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     if story_files:
         print("\nRun Storybook Doc:")
         for info in story_files.values():
-            print(info)
+            print(info["name"])
+            print(info["path"] + "/" + info["component"])
+            print(info["path"] + "/" + info["config"])
+            print(info["path"] + "/" + info["story"])
 
     if component_files:
         print("\nRun Component Doc:")
         for info in component_files.values():
-            print(info)
+            print(info["name"])
+            print(info["path"] + "/" + info["component"])
+            print(info["path"] + "/" + info["config"])
 
     if ts_files:
         print("\nRun TS Doc:")
         for info in ts_files:
-            print(info)
+            print(info["name"])
+            print(info["path"]+ "/" + info["file"])
 
     # Check if there is any files to process
     if story_files or component_files or ts_files:
