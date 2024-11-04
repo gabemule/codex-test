@@ -20,6 +20,24 @@ EXCLUDED_PREFIXES = [
     '_'
 ]
 
+def format_scss_info(file: str, dir_path: str) -> Dict[str, str]:
+    """
+    Format SCSS file information into a structured dictionary.
+
+    Args:
+        file (str): SCSS file name
+        dir_path (str): Directory path for the file
+
+    Returns:
+        Dict[str, str]: Structured SCSS file information
+    """
+    base_name = file.split('.')[0]
+    return {
+        "name": base_name,
+        "file": file,
+        "path": dir_path
+    }
+
 def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None:
     """
     Generates and displays the command for the given set of files.
@@ -32,6 +50,9 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     # Get base path for the current mode
     base = get_base_path(mode)
 
+    # Join all file names into a single string, separated by space
+    add_files = " ".join(files)
+
     # Add dir_path prefix to each file name
     sass_files = " ".join(f"{dir_path}/{file}" for file in files)
 
@@ -39,17 +60,16 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     relative_path = dir_path.replace('sass/src', '', 1).strip('/')
     doc_path = f"docs/sass/{relative_path}" if relative_path else "docs/sass"
     
+    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-update" 
     guidelines = f'--read "{doc_path}"'
     message = f'--message-file "{base}/pkg/akads/prompts/sass.md"'
-    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-update" 
     command = f"{base_aider} {guidelines} {message} {sass_files}"
 
-    print(f"\nFiles: {files}")
+    # print(f"\nFiles: {files}")
+    # print(f"sass_files: {sass_files}")
+    # print(f"relative_path: sass/src/{relative_path}")
+    # print(f"doc_path: {doc_path}/README.md") 
     # print(f"\nrun_command: \n {command}")
-
-    # Helper function to get the base name of a file (without extension)
-    def get_base_name(file):
-        return file.split('.')[0]
 
     # Process scss files
     scss_files = []
@@ -57,12 +77,13 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
         if (file.endswith('.scss') and
             not any(file.startswith(prefix) for prefix in EXCLUDED_PREFIXES) and
             not any(file.endswith(ext) for ext in EXCLUDED_EXTENSIONS)):
-            scss_files.append(file)
+            scss_files.append(format_scss_info(file, dir_path))
 
     # Print results
     if scss_files:
         print("\nRun SCSS Doc:")
-        print(scss_files)
+        for info in scss_files:
+            print(info)
         print()
         print("-" * 80)
 
@@ -95,5 +116,6 @@ def run(json: Dict[str, Any], mode: str = "prod") -> None:
     print("Starting - Sass Docs:")
     print("-" * 80)
     process_directory(json["sass"]["src"], "sass/src", mode)
+    print("-" * 80)
     print("Processing completed.")
     print("-" * 80)

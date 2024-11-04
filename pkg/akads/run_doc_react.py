@@ -36,6 +36,33 @@ COMPONENT_REQUIRED_EXTENSIONS = [
     '.config.ts'
 ]
 
+def format_component_info(base_name: str, files: List[str], dir_path: str) -> Dict[str, str]:
+    """
+    Format component information into a structured dictionary.
+
+    Args:
+        base_name (str): Base name of the component
+        files (List[str]): List of files for this component
+        dir_path (str): Directory path for the files
+
+    Returns:
+        Dict[str, str]: Structured component information
+    """
+    info = {
+        "name": base_name,
+        "path": dir_path,
+    }
+
+    for file in files:
+        if file.endswith('.stories.tsx'):
+            info["story"] = file
+        elif file.endswith('.config.ts'):
+            info["config"] = file
+        elif file.endswith('.tsx'):
+            info["component"] = file
+
+    return info
+
 def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None:
     """
     Generates and displays the command for the given set of files.
@@ -64,12 +91,15 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
     # - If relative_path is empty (we're at react/src root), use just 'docs/react'
     doc_path = f"docs/react/{relative_path}" if relative_path else "docs/react"
     
+    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-update" 
     guidelines = f'--read "{doc_path}"'
     message = f'--message-file "{base}/pkg/akads/prompts/react.md"'
-    base_aider = f"aider --subtree-only --no-auto-commit --yes --sonnet --cache-prompts --no-stream --no-check-update" 
     command = f"{base_aider} {guidelines} {message} {react_files}"
 
-    print(f"\nFiles: {files}")
+    # print(f"\nFiles: {files}")
+    # print(f"react_files: {react_files}")
+    # print(f"relative_path: react/src/{relative_path}")
+    # print(f"doc_path: {doc_path}/README.md") 
     # print(f"\nrun_command: \n {command}")
 
     # Helper function to get the base name of a file (without extension)
@@ -82,7 +112,11 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
         if file.endswith('.stories.tsx'):
             base_name = get_base_name(file).replace('.stories', '')
             if all(f"{base_name}{ext}" in files for ext in STORY_REQUIRED_EXTENSIONS):
-                story_files[base_name] = [f"{base_name}{ext}" for ext in STORY_REQUIRED_EXTENSIONS]
+                story_files[base_name] = format_component_info(
+                    base_name,
+                    [f"{base_name}{ext}" for ext in STORY_REQUIRED_EXTENSIONS],
+                    dir_path
+                )
 
     # Process component files
     component_files = {}
@@ -92,7 +126,11 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
             not any(file.endswith(ext) for ext in EXCLUDED_EXTENSIONS)):
             base_name = get_base_name(file)
             if f"{base_name}.config.ts" in files:
-                component_files[base_name] = [f"{base_name}{ext}" for ext in COMPONENT_REQUIRED_EXTENSIONS]
+                component_files[base_name] = format_component_info(
+                    base_name,
+                    [f"{base_name}{ext}" for ext in COMPONENT_REQUIRED_EXTENSIONS],
+                    dir_path
+                )
 
     # Process remaining ts files
     ts_files = []
@@ -105,18 +143,27 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
             base_name not in component_files and
             file not in [item for sublist in story_files.values() for item in sublist] and
             file not in [item for sublist in component_files.values() for item in sublist]):
-            ts_files.append(file)
+            ts_files.append({
+                "name": base_name,
+                "file": file,
+                "path": dir_path
+            })
 
     # Print results
     if story_files:
         print("\nRun Storybook Doc:")
-        print(story_files)
+        for info in story_files.values():
+            print(info)
+
     if component_files:
         print("\nRun Component Doc:")
-        print(component_files)
+        for info in component_files.values():
+            print(info)
+
     if ts_files:
         print("\nRun TS Doc:")
-        print(ts_files)
+        for info in ts_files:
+            print(info)
 
     # Check if there is any files to process
     if story_files or component_files or ts_files:
@@ -154,5 +201,6 @@ def run(json: Dict[str, Any], mode: str = "prod") -> None:
     print("Starting - React Docs:")
     print("-" * 80)
     process_directory(json["react"]["src"], "react/src", mode)
+    print("-" * 80)
     print("Processing completed.")
     print("-" * 80)
