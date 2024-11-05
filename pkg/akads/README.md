@@ -1,52 +1,39 @@
 # 📚 Documentation Generator
 
-This module runs documentation generation based on a JSON structure file. The documentation generator can be used in two modes:
-- **🔧 dev**: Running directly from the codex repository
-- **🚀 prod**: Running from .codex/pkg when codex is cloned as .codex in another repository
+This module runs documentation generation based on a JSON structure file. The documentation generator automatically detects if it's running from:
+- **🔧 Development**: When running directly from the project root
+- **🚀 Production**: When running from another project with .codex/
 
 ## 📋 Usage Patterns
 
 ### 💻 Command-line Usage (via __main__.py)
 
-Development mode (in codex repository):
 ```bash
-python -m pkg.akads --mode dev --json-path .tmp/tree_project.json
-```
-
-Production mode (in repository with .codex):
-```bash
-# Add .codex to PYTHONPATH first
-PYTHONPATH=/path/to/project/.codex python -m pkg.akads --json-path .tmp/tree_project.json
+# Add project root to PYTHONPATH first
+export PYTHONPATH=$PWD
 # or
-export PYTHONPATH=/path/to/project/.codex
+export PYTHONPATH=$PWD/.codex
+
+# Generate documentation
 python -m pkg.akads --json-path .tmp/tree_project.json
 ```
 
 ### 🔧 Programmatic Usage (via __init__.py)
 
-Development mode (in codex repository):
 ```python
 from pkg.akads import run
-run(json_path=".tmp/tree_project.json", mode="dev")
-```
-
-Production mode (in repository with .codex):
-```python
-import sys
-sys.path.append('/path/to/project/.codex')  # Add .codex to Python path
-from pkg.akads import run
-run(json_path=".tmp/tree_project.json")  # mode defaults to "prod"
+run(json_path=".tmp/tree_project.json")
 ```
 
 ## 🚀 Complete Workflows
 
 ### 🔧 Development Mode
 
-When working directly in the codex repository:
+When working directly in the project root:
 
 ```bash
 # 1. Activate virtual environment (only needed once)
-source bin/start.sh --mode dev
+source bin/start.sh
 
 # 2. Generate project tree (needed before documentation generation)
 ./bin/tree_generate_all.sh
@@ -60,15 +47,15 @@ export PYTHONPATH=$PWD
 # 5. Install aider (only needed once)
 python -m shared.require_aider
 
-# 6. Generate documentation (choose one):
-python -m pkg.akads --mode dev  # Command-line usage
+# 6. Generate documentation
+python -m pkg.akads  # Command-line usage
 # or
-python3 -c "from pkg.akads import run; run(mode='dev')"  # Programmatic usage
+python3 -c "from pkg.akads import run; run()"  # Programmatic usage
 ```
 
 ### 🚀 Production Mode
 
-When using codex as a tool in another repository:
+When using as a tool in another repository:
 
 ```bash
 # 1. Clone codex as .codex
@@ -89,7 +76,7 @@ export PYTHONPATH=$PWD/.codex
 # 6. Install aider (only needed once)
 python -m shared.require_aider
 
-# 7. Generate documentation (choose one):
+# 7. Generate documentation
 python -m pkg.akads  # Command-line usage
 # or
 python3 -c "from pkg.akads import run; run()"  # Programmatic usage
@@ -120,28 +107,23 @@ Processes Sass files and generates documentation for:
   - Default: `.tmp/tree_project.json`
   - The JSON file should contain the project structure to be processed
 
-- **🔧 mode**: Running mode, either "prod" or "dev"
-  - Default: "prod"
-  - "prod": Running from .codex in another repository
-  - "dev": Running directly from codex repository
-
 ## 🔄 Path Handling
 
-The module uses `utils/get_base_path.py` to handle paths correctly in both production and development modes:
+The module uses `utils/get_base_path.py` to handle paths correctly based on the environment:
 
 ```python
 from utils.get_base_path import get_base_path
 
-base = get_base_path(mode)  # Returns ".codex" for prod, "." for dev
+base = get_base_path()  # Returns "." or ".codex" based on environment
 ```
 
 This ensures that files (like prompts and templates) are accessed from the correct location:
-- In production mode (default): Files are loaded from `.codex/...`
-- In development mode: Files are loaded from `./...`
+- When in project root: Files are loaded from `./...`
+- When in another project: Files are loaded from `.codex/...`
 
 ## 📁 Directory Structure
 
-### 🔧 Development Mode (in codex repository)
+### 🔧 Development Mode (in project root)
 ```
 pkg/
 └── akads/
@@ -153,7 +135,7 @@ pkg/
     └── README.md          # This documentation
 
 utils/
-├── get_base_path.py       # Path handling for dev/prod modes
+├── get_base_path.py       # Path handling with environment detection
 └── load_json.py          # JSON loading utility
 ```
 
@@ -171,9 +153,8 @@ your-project/
 1. ✨ Virtual environment activation and aider installation only need to be done once
 2. 🔄 Project tree must be generated before documentation generation
 3. 🔑 The ANTHROPIC_API_KEY must be set before running pkg.akads
-4. 🚀 Default mode is "prod" when no mode is specified
-5. 🛠️ Core implementation is in run.py, using shared utilities
-6. 🔧 Path handling is managed by utils/get_base_path.py
-7. 📦 Production mode requires:
+4. 🛠️ Core implementation is in run.py, using shared utilities
+5. 🔧 Path handling is managed by utils/get_base_path.py with automatic environment detection
+6. 📦 Production mode requires:
    - codex to be cloned as .codex in the target repository
    - .codex to be added to PYTHONPATH

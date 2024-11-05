@@ -72,8 +72,8 @@ def display_command(files: List[str], dir_path: str, mode: str = "prod") -> None
         dir_path (str): Current directory path.
         mode (str): Running mode, either "prod" or "dev" (default: "prod")
     """
-    # Get base path for the current mode
-    base = get_base_path(mode)
+    # Get base path for the current environment
+    base = get_base_path()
 
     # Join all file names into a single string, separated by space
     add_files = " ".join(files)

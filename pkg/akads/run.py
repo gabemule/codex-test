@@ -59,8 +59,8 @@ def run(json_path: str = ".tmp/tree_project.json", mode: str = "prod") -> None:
     print(f"📂 Using JSON file: {json_path}")
 
     try:
-        # Get base path for the current mode
-        base = get_base_path(mode)
+        # Get base path for the current environment
+        base = get_base_path()
         print(f"📍 Base path: {base}")
         
         # Load and validate JSON structure
